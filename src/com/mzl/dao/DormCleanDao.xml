@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mzl.dao.DormCleanDao" >
+
+    <!--查询总记录数-->
+    <select id="totalCount" resultType="java.lang.Integer">
+        select count(*) from d_dormgrade
+        <where>
+            <if test="d_id!=null and d_id!=0">
+                and  d_id like  '%${d_id}%'
+            </if>
+            <if test="d_dormbuilding !=null and d_dormbuilding !=''">
+                and  d_dormbuilding like  '%${d_dormbuilding}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getDormCleanList" parameterType="DormClean" resultType="DormClean">
+        select *from d_dormgrade
+        <where>
+            <if test="d_id!=null and d_id!=0">
+                and  d_id like  '%${d_id}%'
+            </if>
+            <if test="d_dormbuilding !=null and d_dormbuilding !=''">
+                and  d_dormbuilding like  '%${d_dormbuilding}%'
+            </if>
+        </where>
+        ORDER BY  g_id asc
+        limit #{currentPage},#{pageSize}
+    </select>
+    <select id="findDormCleanById" resultType="com.mzl.po.DormClean" parameterType="Integer">
+        select * from d_dormgrade where g_id = #{g_gid}
+    </select>
+
+    <!--导出Excel-->
+    <select id="getAll" resultType="com.mzl.po.DormClean">
+        select * from d_dormgrade
+    </select>
+
+    <!--添加宿舍卫生-->
+    <insert id="addDormClean" parameterType="DormClean" keyProperty="g_id" useGeneratedKeys="true">
+        insert into d_dormgrade(d_id, d_dormbuilding, d_grade, create_time, update_time)
+        values(#{d_id}, #{d_dormbuilding}, #{d_grade}, now(), now())
+    </insert>
+
+    <!--修改宿舍卫生-->
+    <update id="updateDormClean" parameterType="DormClean">
+        update d_dormgrade
+        <set>
+            <if test="d_id!=null and d_id!=0">
+                d_id=#{d_id},
+            </if>
+            <if test="d_dormbuilding !=null and d_dormbuilding !=''">
+                d_dormbuilding=#{d_dormbuilding},
+            </if>
+            <if test="d_grade!=null and d_grade!=0">
+                d_grade=#{d_grade},
+            </if>
+            <if test="update_time != null" >
+                update_time = now(),
+            </if>
+        </set>
+        where g_id = #{g_id}
+    </update>
+
+    <!--删除宿舍卫生-->
+    <delete id="deleteDormClean" parameterType="Integer">
+         delete from d_dormgrade where g_id = #{g_id}
+    </delete>
+
+
+</mapper>

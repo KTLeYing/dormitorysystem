@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mzl.dao.StudentCleanDao" >
+
+    <!--查询数据总数-->
+    <select id="totalCount" resultType="java.lang.Integer">
+        select count(g_id) from d_stgrade
+        <where>
+            <if test="s_studentid!=null and s_studentid!=0">
+                and  s_studentid like  '%${s_studentid}%'
+            </if>
+            <if test="s_name !=null and s_name !=''">
+                and  s_name like  '%${s_name}%'
+            </if>
+            <if test="s_dormitoryid!=null and s_dormitoryid!=0">
+                and  s_dormitoryid like  '%${s_dormitoryid}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getStudentCleanList" resultType="com.mzl.po.StudentClean">
+           select *from d_stgrade
+           <where>
+               <if test="s_studentid!=null and s_studentid!=0">
+                   and  s_studentid like  '%${s_studentid}%'
+               </if>
+               <if test="s_name !=null and s_name !=''">
+                   and  s_name like  '%${s_name}%'
+               </if>
+               <if test="s_dormitoryid!=null and s_dormitoryid!=0">
+                   and  s_dormitoryid like  '%${s_dormitoryid}%'
+               </if>
+           </where>
+           order by g_id asc
+           limit #{currentPage}, #{pageSize}
+    </select>
+    <select id="findStudentCleanById" resultType="com.mzl.po.StudentClean" parameterType="Integer">
+        select * from d_stgrade where g_id = #{g_ig}
+    </select>
+    <select id="getAll" resultType="com.mzl.po.StudentClean">
+        select * from d_stgrade
+    </select>
+
+    <!--添加学生卫生-->
+    <insert id="addStudentClean" parameterType="StudentClean" keyProperty="g_id" useGeneratedKeys="true">
+        insert into d_stgrade(s_studentid, s_name, s_grade, s_classid, s_dormitoryid, create_time, update_time)
+        values(#{s_studentid},#{s_name},#{s_grade},#{s_classid},#{s_dormitoryid},now(),now())
+    </insert>
+
+    <!--修改学生卫生-->
+    <update id="updateStudentClean" parameterType="StudentClean">
+        update d_stgrade
+        <set>
+            <if test="s_studentid!=null and s_studentid!=0">
+                s_studentid=#{s_studentid},
+            </if>
+            <if test="s_name !=null and s_name !=''">
+                s_name=#{s_name},
+            </if>
+            <if test="s_grade!=null and s_grade!=0">
+                s_grade=#{s_grade},
+            </if>
+            <if test="s_classid!=null and s_classid!=0">
+                s_classid=#{s_classid},
+            </if>
+            <if test="s_dormitoryid!=null and s_dormitoryid!=0">
+                s_dormitoryid=#{s_dormitoryid},
+            </if>
+            <if test="update_time != null" >
+                update_time = now(),
+            </if>
+        </set>
+        where g_id = #{g_id}
+    </update>
+
+    <!--删除学生卫生-->
+    <delete id="deleteStudentClean" parameterType="Integer">
+        delete from d_stgrade where g_id = #{g_id}
+    </delete>
+
+</mapper>
